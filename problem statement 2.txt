@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract tokendistribution{
+    string public constant name="MyToken";
+    string public constant symbol="MT";
+    string public constant decimals="18";
+
+
+    uint public totalsupply;
+    mapping(address=>uint) public claimdone;
+    mapping(address=>uint) public claimremaining;
+    
+
+     constructor(uint totaltoken,address a,address b,address c,address d,address e) {
+        
+        totalsupply=totaltoken;
+
+        
+        uint remainingtoken=totaltoken/2;
+
+        uint claimable=(10*remainingtoken)/100;
+        uint claimed=(5*totaltoken)/100;
+        claimdone[a]=claimed;
+        claimremaining[a]=claimable;
+
+        claimed=(5*totaltoken)/100;
+        claimdone[b]=claimed;
+        claimremaining[b]=claimable;
+
+        claimed=(10*totaltoken)/100;
+        claimdone[c]=claimed;
+        claimremaining[c]=claimable;
+
+        claimed=(10*totaltoken)/100;
+        claimdone[d]=claimed;
+        claimremaining[d]=claimable;
+
+        claimed=(20*totaltoken)/100;
+        claimdone[e]=claimed;
+        claimremaining[e]=claimable;
+
+    }
+    
+    function moretoken(address a,uint amount) public 
+    {
+        
+     
+        require(amount<=claimremaining[a],"Limit exceeded");
+        claimdone[a]=claimdone[a]+amount;
+        claimremaining[a]=claimremaining[a]-amount;
+    }
+    function detailsofclaimedtoken(address a) public view returns(uint)
+    {
+        return(claimdone[a]);
+        
+    }
+    function detailsoftokentobeclaimed(address a) public view returns(uint)
+    {
+        return(claimremaining[a]);
+        
+    }
+}

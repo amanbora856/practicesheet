@@ -1,0 +1,44 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.4;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+contract MyToken is ERC20 {
+    uint public constant duration = 1 hours;
+  uint public immutable end;
+  address public owner;
+    uint256 public supply=0;//this variable will check the amount of token withdrawn until now
+    uint256 public token=0;//after user deposit ether the amount of token that can be given to user 
+                            //if suppose 1ether =100 token.
+    address payable to;
+    mapping(address=>uint)public details;
+    
+       
+    
+     constructor(address payable _owner) {
+    end = block.timestamp + duration;
+    owner = _owner; 
+  }
+
+    receive() external payable
+    {  
+        to=msg.sender;
+         token=100*(msg.value/1 ether);
+        supply=supply+token;
+        require(supply<10000,"Cannot transfer more token");
+        IERC20(token).transferFrom(msg.sender, address(this), amount);
+    }
+     
+    function withdraw(address token, uint amount) external {
+    require(msg.sender == owner, 'only owner');
+    require(block.timestamp >= end, 'too early');
+    if(token == address(0)) { 
+      owner.transfer(amount);
+      details[msg.sender]=(token);
+    } else {
+      IERC20(token).transfer(owner, amount);
+    }
+  }
+        
+}
+   
+    
